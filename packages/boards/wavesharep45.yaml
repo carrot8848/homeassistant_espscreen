@@ -1,6 +1,5 @@
-# ESP Screens - a Waveshare ESP32-P4-WIFI6-Touch-LCD-5 tried out in the lab: a 5-inch 720 x 1280 MIPI-DSI panel (HX8394)
-# with GT911 capacitive touch, on an ESP32-P4 with an ESP32-C6 for Wi-Fi. A lab board (docs/ADDING_A_BOARD.md, step 4):
-# it has a board file and stays out of the catalog and out of Git.
+# ESP Screens - the Waveshare ESP32-P4-WIFI6-Touch-LCD-5: a 5-inch 720 x 1280 MIPI-DSI panel (HX8394) with GT911
+# capacitive touch, on an ESP32-P4 with an ESP32-C6 for Wi-Fi.
 # Hardware reference: https://www.waveshare.com/esp32-p4-wifi6-touch-lcd-5.htm
 #
 # ESPHome has no HX8394 model in its mipi_dsi platform, so the panel is `model: CUSTOM` with the init sequence and the
@@ -9,7 +8,7 @@
 # sequence unless the pin is inverted. The panel is 720 x 1280 itself (portrait); LVGL turns the picture and the touch
 # together. The pins are those of the other Waveshare P4 panels: GT911 on the touch bus (GPIO7/8) with its reset on
 # GPIO23, the backlight's PWM on GPIO26, and the audio wired as the Waveshare P4 86 panel
-# (hardware/wavesharep4-audio.yaml). Nothing here has been tried on the glass yet.
+# (hardware/wavesharep4-audio.yaml). Tried on one unit: picture, touch, backlight and pages.
 #
 # A board file is the board's hardware, the facts the shared tree takes from it (its glass and its grid), and the
 # features it has; docs/PROFILES.md says how the files of a screen fit together.
@@ -25,12 +24,12 @@ packages:
   # The speaker and the microphones are wired as on the Waveshare P4 86 panel (an ES8311 at 0x18, an ES7210 at 0x40, an
   # NS4150B amplifier on GPIO53, the same five I2S pins), so the board takes that audio. It is off here: ESPHome
   # 2026.10.2's esp_audio_stack does not compile (its CapsRingBuffer calls RingBuffer::handle_ as a member, which
-  # 2026.10 made a function), and the board is tried out for its glass first. On ESPHome 2026.9.0 add
-  # `audio: !include ../hardware/wavesharep4-audio.yaml` here and `esphome: min_version: 2026.9.0` below.
+  # 2026.10 made a function), and the board is tried out for its glass first. On ESPHome 2026.9.0 include the audio
+  # package (../hardware/wavesharep4-audio.yaml) here and raise `esphome: min_version` below to 2026.9.0.
 
 substitutions:
   # The key of this board file; the firmware reports it so ESP Screens knows what board a screen is.
-  BOARD_ID: "lab-waveshare-p45"
+  BOARD_ID: "wavesharep45"
   DEVICE_NAME: "wavesharep45"
   DEVICE_FRIENDLY_NAME: "My Waveshare P4 5"
 
@@ -85,14 +84,13 @@ touchscreen:
     reset_pin: GPIO23
     update_interval: 32ms
 
-# The backlight, a PWM pin that is not inverted on this board (features/backlight.yaml makes it the light), at most 95 %
-# of its range as in Waveshare's examples; zero_means_zero keeps a dark standby dark.
+# The backlight, a PWM pin that is not inverted on this board (features/backlight.yaml makes it the light), at the
+# full range as in Waveshare's example for this panel; zero_means_zero keeps a dark standby dark.
 output:
   - platform: ledc
     id: gpio_backlight_pwm
     pin: GPIO26
     frequency: ${BACKLIGHT_FREQUENCY}
-    max_power: 0.95
     zero_means_zero: true
 
 # ESPHome has no HX8394 model: the panel's own timings and init sequence, byte for byte as Waveshare's ESP-IDF BSP

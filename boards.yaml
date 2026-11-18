@@ -297,3 +297,13 @@ waveshare43c:
   status: experimental
   # The 4.3's glass with Waveshare's CH32V003 expander in place of the CH422G (website discussion 10): a 4.3C built
   # from the 4.3's board file starts with its touch chip in reset.
+
+wavesharep45:
+  file: wavesharep45.yaml
+  name: Waveshare
+  model: ESP32-P4-WIFI6-Touch-LCD-5
+  status: experimental
+  # The 5-inch 720 x 1280 board of the ESP32-P4-WIFI6-Touch-LCD series (HX8394 panel, GT911 touch). ESPHome has no
+  # HX8394 model, so its board file carries the panel's own init sequence and timings. Seen on glass on one unit:
+  # picture, touch, backlight and pages. Its speaker and microphones are the Waveshare P4 86 panel's audio, off until
+  # ESPHome's audio stack builds again.
