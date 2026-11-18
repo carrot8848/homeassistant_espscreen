@@ -1,3 +1,7 @@
+## Unreleased
+
+- **A screen can be built in Chinese.** Noto Sans SC with the first thousand characters by use, the words a house needs and the Chinese punctuation goes into the five text fonts of a screen whose YAML says `LANGUAGE: "zh-CN"` or `"zh"`, at 2 bits a pixel, about 2.2 MB of flash; every other screen keeps Roboto and spends nothing on it. Tile names and Home Assistant's own words in Chinese reach the glass, while the screens' own words stay English until a `zh.json` lands. Settings offers Chinese for a screen, so that Home Assistant's language does not turn it back to English.
+
 ## 0.4.109 (firmware 0.68.0)
 
 - **The SenseCAP Indicator is stable and recommended.** Seeed's SenseCAP Indicator D1 (the GX panel) joins the recommended boards at the top of New screen, with its buzzer as the screen's speaker.
@@ -30,7 +34,6 @@
 - **A board can have a step of its own after installing.** Some boards need one more thing done once, such as a second chip that takes a firmware of its own. New screen offers it as a page after the screen works, a card above the screen offers it until it is done, and the screen's menu keeps it for later.
 
 - **Installing from the browser stops and says why when the chosen port does not answer.** With the wrong port chosen, Install kept turning and said nothing, and every new try used that same port again without asking. The page now waits 20 seconds for the chip, then stops with what to do, gives Install back and asks for the port again at the next click. On a board that shows two ports on one cable, such as the SenseCAP Indicator ("USB Serial" and "INDICATOR RP2040"), it knows the port of the second chip and says at once to choose the other one.
-
 ## 0.4.104 (firmware 0.64.0)
 
 - **Save & send and Add tile work on a phone again.** With an AI connected for Layoutbot, a tap anywhere in the bar at the bottom of the phone editor opened Layoutbot's chat instead: an invisible part of its key lay over the whole bar. Each key in the bar is its own again. ([#471](https://github.com/MaxGramser/homeassistant_espscreen/issues/471), [#438](https://github.com/MaxGramser/homeassistant_espscreen/issues/438))

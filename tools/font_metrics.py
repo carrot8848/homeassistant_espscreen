@@ -27,7 +27,8 @@ def font_file(core_text, font_id, values=None):
     """The TrueType file packages/core.yaml builds a font from, by its id, relative to the repository. A file named by a
     substitution of the look (`label`: TILE_NAME_FONT_FILE, bold or medium) is read from `values`, the board's
     substitutions (profiles.board_values); without them such a font raises KeyError instead of returning a name with
-    `${...}` in it."""
+    `${...}` in it. A screen built in Chinese states Noto Sans SC (FONT_TEXT_*), measured as the Roboto file it replaces:
+    a board's shape is the same in every language."""
     found = re.search(r'- file: "\$\{FONT_DIR\}/([^"]+)"\n    id: ' + re.escape(font_id) + r'\n', core_text)
     if not found:
         raise KeyError(f'no font {font_id} in packages/core.yaml')
@@ -36,7 +37,12 @@ def font_file(core_text, font_id, values=None):
         if values is None or name[1] not in values:
             raise KeyError(f'font {font_id} names its file by ${{{name[1]}}}: pass the board\'s values')
         return str(values[name[1]])
-    return 'fonts/' + re.sub(r'\$\{(\w+)\}', value, found[1])
+    name = re.sub(r'\$\{(\w+)\}', value, found[1])
+    return 'fonts/' + LATIN_FILES.get(name, name)
+
+
+# The Latin file a screen built in Chinese is measured as (packages/core.yaml, FONT_TEXT_*).
+LATIN_FILES = {'NotoSansSC-Bold-subset.otf': 'Roboto-700.ttf', 'NotoSansSC-Regular-subset.otf': 'Roboto-400.ttf'}
 
 
 def ink_top(font, size, char='H'):

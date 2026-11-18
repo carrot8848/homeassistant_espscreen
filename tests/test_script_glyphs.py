@@ -1,11 +1,12 @@
 """The letters of a language written in another script (docs/TRANSLATING.md, "Letters"): only a screen built in such a
 language carries them in its five text fonts, and the app keeps them only in what it sends to such a screen.
 
-- packages/core.yaml has one list per script (SCRIPT_GLYPHS_CYRILLIC) and SCRIPT_GLYPHS picks it by LANGUAGE; the text
-  fonts end on "${SCRIPT_GLYPHS}", empty for every other language, so no other screen spends flash on them.
+- packages/core.yaml has one list per script (SCRIPT_GLYPHS_CYRILLIC, SCRIPT_GLYPHS_HAN) and SCRIPT_GLYPHS picks one by
+  LANGUAGE; the text fonts end on "${SCRIPT_GLYPHS}", empty for every other language, so no other screen spends flash.
 - header_bar.SCRIPT_GLYPHS has the same letters, and clean_text keeps them for a screen whose language's `_meta.script`
   names that script; every other screen gets them dropped, as before.
-- The languages SCRIPT_GLYPHS takes are exactly the translation files that say `"script": "cyrillic"`.
+- The languages SCRIPT_GLYPHS takes are exactly the translation files that name one of those scripts and the languages
+  i18n.PLANNED knows before their texts exist (Chinese, whose screens read English words for now).
 """
 import json
 from pathlib import Path
@@ -22,6 +23,7 @@ import i18n  # noqa: E402
 
 CORE = (ROOT / 'packages/core.yaml').read_text(encoding='utf-8')
 TEXT_FONTS = ('headline', 'watch_value', 'label', 'sublabel', 'sublabel_big')
+SCRIPTS = ('cyrillic', 'han')
 
 
 def core_list(script):
@@ -30,10 +32,12 @@ def core_list(script):
 
 class FirmwareLetters(unittest.TestCase):
     def test_the_app_and_the_firmware_name_the_same_letters(self):
-        self.assertEqual(set(core_list('cyrillic')), set(header_bar.SCRIPT_GLYPHS['cyrillic']))
-        self.assertEqual(len(core_list('cyrillic')), len(set(core_list('cyrillic'))), 'a letter twice')
-        # None of them is a Latin glyph already in the fonts, which ESPHome refuses as a duplicate.
-        self.assertFalse(set(core_list('cyrillic')) & set(header_bar.GLYPHS))
+        for script in SCRIPTS:
+            with self.subTest(script=script):
+                self.assertEqual(set(core_list(script)), set(header_bar.SCRIPT_GLYPHS[script]))
+                self.assertEqual(len(core_list(script)), len(set(core_list(script))), 'a letter twice')
+                # None of them is a Latin glyph already in the fonts, which ESPHome refuses as a duplicate.
+                self.assertFalse(set(core_list(script)) & set(header_bar.GLYPHS))
 
     def test_every_text_font_takes_the_letters_of_its_language_last(self):
         for font in TEXT_FONTS:
@@ -44,16 +48,20 @@ class FirmwareLetters(unittest.TestCase):
 
     def test_the_letters_go_only_into_a_screen_built_in_such_a_language(self):
         expression = re.search(r"(?m)^  SCRIPT_GLYPHS: '(.*)'$", CORE).group(1)
-        for language, carried in (('en', ''), ('nl', ''), ('pt-BR', ''), ('ru', core_list('cyrillic'))):
+        cases = (('en', ''), ('nl', ''), ('pt-BR', ''), ('ru', core_list('cyrillic')), ('zh', core_list('han')),
+                 ('zh-CN', core_list('han')))
+        for language, carried in cases:
             with self.subTest(language=language):
-                values = {'LANGUAGE': language, 'SCRIPT_GLYPHS_CYRILLIC': core_list('cyrillic')}
+                values = {'LANGUAGE': language, 'SCRIPT_GLYPHS_CYRILLIC': core_list('cyrillic'),
+                          'SCRIPT_GLYPHS_HAN': core_list('han')}
                 self.assertEqual(profiles.resolve(expression, values), carried)
 
-    def test_the_languages_it_takes_are_the_cyrillic_translation_files(self):
+    def test_the_languages_it_takes_are_the_translation_files_and_known_languages_of_those_scripts(self):
         named = set(re.findall(r'"([a-z]{2,3})"', re.search(r'(?m)^  SCRIPT_GLYPHS: (.*)$', CORE).group(1)))
         files = {path.stem for path in (ROOT / 'screen_manager/translations').glob('*.json')
-                 if json.loads(path.read_text(encoding='utf-8')).get('_meta', {}).get('script') == 'cyrillic'}
-        self.assertEqual(named, files)
+                 if json.loads(path.read_text(encoding='utf-8')).get('_meta', {}).get('script') in SCRIPTS}
+        planned = {code for code, meta in i18n.PLANNED.items() if meta.get('script') in SCRIPTS}
+        self.assertEqual(named, files | planned)
 
 
 class AppLetters(unittest.TestCase):
@@ -70,6 +78,13 @@ class AppLetters(unittest.TestCase):
         # Firmware from before the languages draws the old letters only, whatever the language.
         i18n.SCREEN.set({'language': 'ru', 'legacy': True})
         self.assertEqual(header_bar.clean_text('Кухня'), '')
+
+    def test_a_chinese_screen_keeps_its_han_letters(self):
+        i18n.SCREEN.set({'language': 'zh-CN', 'legacy': False})
+        self.assertEqual(i18n.screen_script(), 'han')
+        self.assertEqual(header_bar.clean_text('客厅的灯，22.5°C'), '客厅的灯，22.5°C')
+        i18n.SCREEN.set({'language': 'nl', 'legacy': False})
+        self.assertEqual(header_bar.clean_text('客厅灯'), '')
 
 
 if __name__ == '__main__':

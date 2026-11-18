@@ -61,6 +61,13 @@ def flatten(node, prefix=''):
     return pairs
 
 
+# Languages the app knows before their texts exist (app 0.62.0): a screen built in one carries the letters of its script
+# (docs/TRANSLATING.md, "Letters") and shows English until a translation file lands. Chinese is the first: its fonts
+# carry the han letters, so tile names and Home Assistant's own words keep them, while the screens' own words are still
+# English. Settings offers it, so that a screen's YAML (and Home Assistant's language) can name it.
+PLANNED = {'zh': {'name': '中文', 'english': 'Chinese', 'script': 'han', 'plural': 'none', 'clock': '24', 'checked': False}}
+
+
 class Translations:
     """Every language file, read once."""
 
@@ -76,6 +83,9 @@ class Translations:
                 self.data[path.stem] = data
                 self.flat[path.stem] = {key: value for key, value in flatten({k: v for k, v in data.items() if k != '_meta'})
                                         if isinstance(value, str)}
+        for code, meta in PLANNED.items():
+            self.data.setdefault(code, {'_meta': dict(meta)})
+            self.flat.setdefault(code, {})
         self.data.setdefault('en', {'_meta': {'name': 'English', 'english': 'English', 'plural': 'one_other'}})
         self.flat.setdefault('en', {})
 

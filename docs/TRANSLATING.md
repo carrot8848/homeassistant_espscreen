@@ -94,7 +94,7 @@ A partial check helps too. Say which sections you went through, and leave `check
 | Latin | English, Dutch, German, French, Italian, Spanish, Portuguese, Polish, Czech, the Nordic languages, Turkish, ... | Every screen: the fonts carry every letter European languages use |
 | Cyrillic | Russian | Yes: the Cyrillic letters go only onto a screen built in a Cyrillic language (see "Letters" below) |
 | Cyrillic, Greek | Ukrainian, Bulgarian, Greek | Possible in the same way: a maintainer adds the language to the list, or a list for a new script. Ask first. |
-| Chinese, Japanese, Korean | | Only on a Guition, with the characters the texts need; a CYD has too little room and shows English |
+| Chinese, Japanese, Korean | Chinese | Chinese: yes on every board from firmware 0.62.0, with a thousand characters and Noto Sans SC (see "Letters"); its words are English until a `zh.json` lands. Japanese and Korean: not yet |
 | Right-to-left, or letters that join | Arabic, Hebrew, Persian, Thai, Hindi | Not yet: the screens' graphics library doesn't write them without extra work |
 
 The editor and the app's messages work in any language, whatever the screens can draw.
@@ -104,19 +104,31 @@ The editor and the app's messages work in any language, whatever the screens can
 The five text fonts of every screen carry the Latin letters European languages use, and nothing more, because flash is
 tight on every board. A language written in another script brings its letters along only where they are needed:
 
-- Its translation file names the script in `_meta.script` (`cyrillic`).
-- `packages/core.yaml` has one list of letters per script (`SCRIPT_GLYPHS_CYRILLIC`) and picks it with `SCRIPT_GLYPHS` by
-  the screen's `LANGUAGE`, which the app writes into the screen's own YAML. The text fonts end on `"${SCRIPT_GLYPHS}"`,
-  so a screen built in Russian carries the Cyrillic letters and every other screen carries none of them.
+- Its translation file names the script in `_meta.script` (`cyrillic`), or `i18n.PLANNED` in the app does for a
+  language known before its texts exist (`zh`: the screens read the han letters now, English words for now, and
+  Settings offers Chinese so that a screen can be built with it).
+- `packages/core.yaml` has one list of letters per script (`SCRIPT_GLYPHS_CYRILLIC`, `SCRIPT_GLYPHS_HAN`) and picks it
+  with `SCRIPT_GLYPHS` by the screen's `LANGUAGE`, which the app writes into the screen's own YAML. The text fonts end
+  on `"${SCRIPT_GLYPHS}"`, so a screen built in Russian carries the Cyrillic letters and every other screen carries none
+  of them.
 - The app keeps those letters in what it sends to that screen alone: names and state words in Cyrillic reach a Russian
   screen, and other screens get them left out as before (`header_bar.SCRIPT_GLYPHS`, `clean_text`).
 - `tools/i18n.py check` accepts the letters of a language's own script in its screen texts. A test keeps the lists in the
-  firmware and the app equal, and the languages `SCRIPT_GLYPHS` takes equal to the files that name that script.
+  firmware and the app equal, and the languages `SCRIPT_GLYPHS` takes equal to the files that name that script (and the
+  languages known before their texts).
 
 A list holds the letters its languages write and no more, since every letter is drawn in five fonts on every screen
 built in that language. To add a language of a script that has a list, add its code to `SCRIPT_GLYPHS` beside `ru` and
 the letters it writes that the list lacks to both lists (Ukrainian adds Є, є, І, і, Ї, ї, Ґ and ґ). A new script takes a
 list of its own in both places, letters the text font (Roboto) has.
+
+A script Roboto has no letters for brings a font as well. Chinese (`han`, 1,094 letters: the first thousand characters by
+use, the words a house needs and the Chinese punctuation) takes Noto Sans SC, cut to those letters and the Latin ones by
+`fontTools` (`fonts/NotoSansSC-Regular-subset.otf` and `-Bold-subset.otf`, OFL): `FONT_TEXT_REGULAR`, `FONT_TEXT_BOLD`
+and `FONT_TEXT_MEDIUM` in `packages/core.yaml` swap the file on a screen built in Chinese, and `FONT_TEXT_BPP` reads
+those fonts at 2 bits a pixel; the thousand letters of the five sizes cost about 2.2 MB of a 16 MB board. Noto Sans SC
+carries no Latin Extended-A, so the letters of the shared list it lacks (Ą, ł, Ș and the rest) are copied into the two
+files from Noto Sans at the same weight, the family's Latin cuts.
 
 ## The format
 

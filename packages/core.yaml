@@ -25,11 +25,23 @@ substitutions:
   LANGUAGE: "en"
   # The letters a language written in another script needs beyond the Latin ones the text fonts always carry
   # (docs/TRANSLATING.md, "Letters"): only a screen built in such a language carries them, so no other screen spends
-  # flash on them. One list per script with the letters its languages here write (Russian's now), the same letters as
-  # header_bar.SCRIPT_GLYPHS in the add-on (a test keeps the two equal), and the languages that take it, those whose
-  # translation file says `"script": "cyrillic"` (a test as well).
+  # flash on them. One list per script with the letters its languages here write (Russian's and Chinese's now), the
+  # same letters as header_bar.SCRIPT_GLYPHS in the add-on (a test keeps the two equal), and the languages that take
+  # them: those whose translation file says `"script": "cyrillic"`, and the ones the add-on knows before their texts
+  # exist (`zh`; a test as well).
   SCRIPT_GLYPHS_CYRILLIC: "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяЁё№"
-  SCRIPT_GLYPHS: '${ SCRIPT_GLYPHS_CYRILLIC if LANGUAGE.split("-")[0] in ["ru"] else "" }'
+  # The same for Chinese: the first thousand characters by use (现代汉语常用字表 and the word frequencies of jieba), the
+  # words a house needs (灯, 空调, 湿度, 客厅, 播放 and the like) and the Chinese punctuation. The two files in fonts/ carry
+  # exactly these letters and the Latin ones above.
+  SCRIPT_GLYPHS_HAN: "、。《》【】一七万三上下不与专且世业东两严个中丰临为主举久么义之乎乐九也习乡书买乱了争事二于云互五亚些交亦产京亮亲人亿什仅今介仍从他代令以们件价任份企众优会传伤似但位低住体何余作你使例供依侧便俄保信修倒候值假做停储像儿元兄充先光克免党入全八公六兰共关兴兵其具典养兼内再写军农冰冲决况冷净准凉减几出击刀分切划列刘则刚创初判利别到制刺刻前剑剧副力办功加务动助劳势包化北区医十千升半华协单卖南占卧卫印危即却厂厅历压厘厚原厨去县参又及友双反发取受变口古句另只叫召可台史右叶号司吃各合同名后向吗否吧含听启吴吸呀呈告员呢周味呼命和咱品响哥哪哭唐商啊啦善喜喝嘴器四回因团园围固国图土在地场均坏坐块坚型城域基堂境墓墙增士声处备复夏外多夜够大天太夫央失头奇套女她好如始姓委威娘子字存孙季学孩宁它守安宋完宗官定宜宝实审客宣室宫害家容宽密富寒察对导封射将小少尔尚就尼尽局层居届屏展属山岁岗岛州工左差己已巴市布师希帘帝带席帮常幕干平年并广床库应底府度座康延建开异式引弟张弱弹强归当录形彩影往征待很律得微德心必志忙快念忽态怎怕思急性怪总恢恩息您情惊想意感愿慢成我或战户房所扇手才打执扩扫批找承技把抓投抗折护报担拉拖招括拿持指按挥换据授掉掌排接控推提插搞摄播支收改攻放政故效敌救教敢散数整文斗料断斯新方施旁旅族无既日旧早时昌明易星春昨是显晚普景晴暂暖暗曰曲更曾最月有服望朝期木未末本术朱机杀杂权李材村条来杨松板极构林果枪架某柜查标树校样核根格案桌桥梯检椅楚楼模次欢欧止正此步武死段殿母每毒比毕毛民气氛水永求汉江沉沙没河油治沿法泡波注洋洗洞洪洲活派流测济浴海浸消涓深清渐温港游湖湿源满演潮激火灯灵炉炎炮点烈烟烧热然照熟燃燥爱父爷爽片版牌牛物特状独献玄率玉王环现班球理瓶甚生用田由甲电男画界留略病痛登白百的皇皮益监盒盘目直相省看真眼着睡督瞧知短石矿研破础确磁示礼社神票禁福离种科秒积称移程究空穿突窄窗立站竟章童端笑笔第等筑答策简算管箱米类精系紝素紧红约级纪线练组细织终经结给绝统继续维编网罗罢罪置美群翻老考者而耗职联肉股育背胜胡能脑脚脸臣自至致舒航般船良色艺节花苏若苦英范茶荆草药获菜营落著蒙藏虽血行街衣补表袋被装襄西要见观规视觉角解言警计认让训议记讲许论设证评识诉词试诗话该语说请诸读谁调谈象负财责败货质贵费资赛走赶起超越足跑跟路跳身车转轮软轻载较辑输辖边达过迎运近返还这进远连迟述追退送适选逐通速造遇道遗那邦郡部都鄂配酒醒采里重量金钟钱铁银销锁错锛镇镜长门闭问间闹闻队防阳阴阵阶阿附际陆陈降限院除险陵随障难雄集雨雪零雷雾需露霾青静非靠面革音页顶项顺须顾预领频题额风飞食餐饭首香马驻验骨高鱼鲜黄黑齐龙！（），：；？～￥"
+  SCRIPT_GLYPHS: '${ SCRIPT_GLYPHS_CYRILLIC if LANGUAGE.split("-")[0] in ["ru"] else SCRIPT_GLYPHS_HAN if LANGUAGE.split("-")[0] in ["zh"] else "" }'
+  # The text fonts' file and bits per pixel: a screen built in Chinese takes Noto Sans SC cut to those letters, at 2
+  # bits a pixel, which costs about 2.2 MB of flash (the English build of the 5-inch board is 4.2 MB, the Chinese one
+  # 6.4 MB); every other screen takes Roboto and 4. Chinese has no 500, so the two fonts that take 500 take the bold cut.
+  FONT_TEXT_MEDIUM: '${ "NotoSansSC-Bold-subset.otf" if LANGUAGE.split("-")[0] in ["zh"] else "Roboto-500.ttf" }'
+  FONT_TEXT_BOLD: '${ "NotoSansSC-Bold-subset.otf" if LANGUAGE.split("-")[0] in ["zh"] else "Roboto-700.ttf" }'
+  FONT_TEXT_REGULAR: '${ "NotoSansSC-Regular-subset.otf" if LANGUAGE.split("-")[0] in ["zh"] else "Roboto-400.ttf" }'
+  FONT_TEXT_BPP: '${ 2 if LANGUAGE.split("-")[0] in ["zh"] else 4 }'
   # Swipe between pages on a screen that has stored no choice of its own: off, as every screen set up before had it, so
   # an update changes nothing there. New screen writes "1" into a new screen's own YAML, which then swipes and opens the
   # Dock out of the box. Once the screen stores a choice (any change of a setting), that choice wins. Keep "0" here.
@@ -996,10 +1008,13 @@ font:
   # NotoSansSymbols2-hearts.ttf (OFL): Noto Sans Symbols 2 cut to those three with fontTools' pyftsubset, its U+2764 given
   # the U+2665 heart, as Noto's own is a squat one lying on its side. tools/profiles.py glyphs() reads both lists.
   # The last entry, ${SCRIPT_GLYPHS}, is empty on every screen but one built in a language of another script.
-  - file: "${FONT_DIR}/Roboto-500.ttf"
+  # A screen built in Chinese takes its file instead: Noto Sans SC (OFL), cut to the characters above and the han
+  # letters, two files of 388 KB at 400 and 700 (fonts/NotoSansSC-*-subset.otf); the 1,094 han letters of the five sizes
+  # are drawn at 2 bits a pixel and cost about 2.2 MB.
+  - file: "${FONT_DIR}/${FONT_TEXT_MEDIUM}"
     id: headline
     size: ${FONT_HEADLINE_SIZE}
-    bpp: 4
+    bpp: ${FONT_TEXT_BPP}
     glyphs: ['<','>','—','&','@','!',',','.','?','"','%','(',')','+','-','_',':','°','0','1','2','3','4','5',
              '6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T',
              'U','V','W','X','Y','Z',' ','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q',
@@ -1017,10 +1032,10 @@ font:
       - file: "${FONT_DIR}/NotoSansSymbols2-hearts.ttf"
         glyphs: ['♡','♥','❤']
 
-  - file: "${FONT_DIR}/Roboto-500.ttf"
+  - file: "${FONT_DIR}/${FONT_TEXT_MEDIUM}"
     id: watch_value
     size: ${FONT_WATCH_VALUE_SIZE}
-    bpp: 4
+    bpp: ${FONT_TEXT_BPP}
     glyphs: ['<','>','—','&','@','!',',','.','?','"','%','(',')','+','-','_',':','°','0','1','2','3','4','5',
              '6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T',
              'U','V','W','X','Y','Z',' ','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q',
@@ -1072,7 +1087,7 @@ font:
   - file: "${FONT_DIR}/${TILE_NAME_FONT_FILE}"
     id: label
     size: ${FONT_LABEL_SIZE}
-    bpp: 4
+    bpp: ${FONT_TEXT_BPP}
     glyphs: ['<','>','—','&','@','!',',','.','?','"','%','(',')','+','-','_',':','°','0','1','2','3','4','5',
              '6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T',
              'U','V','W','X','Y','Z',' ','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q',
@@ -1090,10 +1105,10 @@ font:
       - file: "${FONT_DIR}/NotoSansSymbols2-hearts.ttf"
         glyphs: ['♡','♥','❤']
 
-  - file: "${FONT_DIR}/Roboto-400.ttf"
+  - file: "${FONT_DIR}/${FONT_TEXT_REGULAR}"
     id: sublabel
     size: ${FONT_SUBLABEL_SIZE}
-    bpp: 4
+    bpp: ${FONT_TEXT_BPP}
     glyphs: ['<','>','—','&','@','!',',','.','?','"','%','(',')','+','-','_',':','°','0','1','2','3','4','5',
              '6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T',
              'U','V','W','X','Y','Z',' ','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q',
@@ -1111,10 +1126,10 @@ font:
       - file: "${FONT_DIR}/NotoSansSymbols2-hearts.ttf"
         glyphs: ['♡','♥','❤']
 
-  - file: "${FONT_DIR}/Roboto-400.ttf"
+  - file: "${FONT_DIR}/${FONT_TEXT_REGULAR}"
     id: sublabel_big
     size: ${FONT_SUBLABEL_BIG_SIZE}
-    bpp: 4
+    bpp: ${FONT_TEXT_BPP}
     glyphs: ['<','>','—','&','@','!',',','.','?','"','%','(',')','+','-','_',':','°','0','1','2','3','4','5',
              '6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T',
              'U','V','W','X','Y','Z',' ','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q',

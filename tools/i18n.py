@@ -282,7 +282,7 @@ def lint():
             for match in literal.finditer(code):
                 text = match.group(1)
                 # Code in a string, or a font's file name (a look's TILE_NAME_FONT_FILE): never a word on the glass.
-                if text in LINT_KEEP or re.search(r'[();]|::|->|\$\{|\.ttf$', text):
+                if text in LINT_KEEP or re.search(r'[();]|::|->|\$\{|\.(?:ttf|otf)$', text):
                     continue
                 if re.match(r'^[A-Z][a-z]', text) or re.search(r'[A-Za-z]{2,} [a-z]{2,}', text):
                     found.append(f'{path.relative_to(ROOT)}:{number}: "{text}"')
