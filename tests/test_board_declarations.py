@@ -68,7 +68,7 @@ STILL_HELD = {
     ),
     'switch': (
         'crowpanel101', 'reterminald1001', 'seeed-sensecap-indicator-d1', 'tab5', 'waveshare-esp32s3-4v4',
-        'wavesharep4',
+        'wavesharep4', 'wavesharep45',
     ),
     'text_sensor': ('guition-4848s040', 'guition-jc8012p4a1',),
     'time': ('reterminald1001',),

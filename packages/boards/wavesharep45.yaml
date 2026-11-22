@@ -22,10 +22,13 @@ packages:
   self_test: !include ../features/self-test.yaml
   snapshot: !include ../features/snapshot.yaml
   # The speaker and the microphones are wired as on the Waveshare P4 86 panel (an ES8311 at 0x18, an ES7210 at 0x40, an
-  # NS4150B amplifier on GPIO53, the same five I2S pins), so the board takes that audio. It is off here: ESPHome
-  # 2026.10.2's esp_audio_stack does not compile (its CapsRingBuffer calls RingBuffer::handle_ as a member, which
-  # 2026.10 made a function), and the board is tried out for its glass first. On ESPHome 2026.9.0 include the audio
-  # package (../hardware/wavesharep4-audio.yaml) here and raise `esphome: min_version` below to 2026.9.0.
+  # NS4150B amplifier whose enable is GPIO53, the same five I2S pins), so the board has that audio. Its transport is the
+  # package's default "aec" (parts/es7210/aec.yaml): the pinned esp_audio_stack runs the bus in TDM both ways at once,
+  # with the ES7210's MIC3 as the playback reference, so the microphone keeps listening while the speaker plays. Built
+  # on ESPHome 2026.10.2 with the audio stack at 245fc1ad (parts/echo-cancel.yaml). The firmware now also builds with
+  # ESPHome 2026.11, but a board with echo cancelling does not: the stack there still reads the speaker's old
+  # audio_dac_ (docs/open-issues/esphome-2026-11-audio-stack.md).
+  audio: !include ../hardware/wavesharep4-audio.yaml
 
 substitutions:
   # The key of this board file; the firmware reports it so ESP Screens knows what board a screen is.
@@ -82,7 +85,8 @@ touchscreen:
     display: my_display
     i2c_id: touch_bus
     reset_pin: GPIO23
-    update_interval: 32ms
+    interrupt_pin: GPIO2
+    # update_interval: 32ms
 
 # The backlight, a PWM pin that is not inverted on this board (features/backlight.yaml makes it the light), at the
 # full range as in Waveshare's example for this panel; zero_means_zero keeps a dark standby dark.
@@ -155,3 +159,18 @@ display:
       - [0xB2, 0x00, 0x80, 0x64, 0x0C, 0x06, 0x2F, 0x00, 0x00, 0x00, 0x00, 0xC0, 0x18]
       - [0x29]                                        # display on
       - delay 80ms
+# The speaker, the microphones and the amplifier come from the audio package above, as Waveshare's schematic wires
+# them: ES8311 at 0x18 with its CE pin pulled down, ES7210 at 0x40 with AD0 and AD1 low, one I2S bus with MCLK on
+# GPIO13, BCLK on GPIO12, LRCLK on GPIO10, the speaker's data on GPIO9 and the microphone's on GPIO11, and the NS4150B's
+# enable on GPIO53, which the package makes follow playback.
+#
+# The backlight's boost enable (BL_EN, the panel's FPC pin 30 through R32) is pulled up by R57 100K to Core_5V, so the
+# glass lights without a pin. Driving it makes that sure and lets the light be cut at the boost rather than trusted to
+# a pull-up; the brightness itself stays on LCD_BL_PWM (GPIO26) above.
+switch:
+  - platform: gpio
+    id: board_backlight_enable
+    name: "Backlight enable"
+    entity_category: config
+    pin: GPIO33
+    restore_mode: ALWAYS_ON
