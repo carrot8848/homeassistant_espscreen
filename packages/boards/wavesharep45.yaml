@@ -25,9 +25,8 @@ packages:
   # NS4150B amplifier whose enable is GPIO53, the same five I2S pins), so the board has that audio. Its transport is the
   # package's default "aec" (parts/es7210/aec.yaml): the pinned esp_audio_stack runs the bus in TDM both ways at once,
   # with the ES7210's MIC3 as the playback reference, so the microphone keeps listening while the speaker plays. Built
-  # on ESPHome 2026.10.2 with the audio stack at 245fc1ad (parts/echo-cancel.yaml). The firmware now also builds with
-  # ESPHome 2026.11, but a board with echo cancelling does not: the stack there still reads the speaker's old
-  # audio_dac_ (docs/open-issues/esphome-2026-11-audio-stack.md).
+  # on ESPHome 2026.10.2 and 2026.11.0: the audio stack comes from this project's fork (parts/echo-cancel.yaml), whose
+  # one commit reads the speaker's DACs on ESPHome 2026.11.
   audio: !include ../hardware/wavesharep4-audio.yaml
 
 substitutions:
