@@ -4433,6 +4433,7 @@
    "model": "ESP32-P4-WIFI6-Touch-LCD-5",
    "name": "Waveshare",
    "order": 32,
+   "recommended": false,
    "settings": [],
    "status": "experimental",
    "touch": "GT911"
@@ -4447,7 +4448,7 @@
    "media_player",
    "bluetooth"
   ],
-  "firmware": "0.63.0",
+  "firmware": "0.64.0",
   "fonts": {
    "headline": 47,
    "icon": 73,
@@ -4462,6 +4463,7 @@
   },
   "height": 720,
   "hotspot": true,
+  "label_weight": 700,
   "look": "standard",
   "max_bar_items": 12,
   "max_pages": 16,
@@ -11572,6 +11574,7 @@
    "model": "ESP32-P4-WIFI6-Touch-LCD-5",
    "name": "Waveshare",
    "order": 32,
+   "recommended": false,
    "settings": [],
    "status": "experimental",
    "touch": "GT911"
@@ -11586,7 +11589,7 @@
    "media_player",
    "bluetooth"
   ],
-  "firmware": "0.63.0",
+  "firmware": "0.64.0",
   "fonts": {
    "headline": 47,
    "icon": 73,
@@ -11601,6 +11604,7 @@
   },
   "height": 720,
   "hotspot": true,
+  "label_weight": 700,
   "look": "standard",
   "max_bar_items": 12,
   "max_pages": 16,
@@ -14537,6 +14541,7 @@
    "model": "ESP32-P4-WIFI6-Touch-LCD-5",
    "name": "Waveshare",
    "order": 32,
+   "recommended": false,
    "settings": [],
    "status": "experimental",
    "touch": "GT911"
@@ -14551,7 +14556,7 @@
    "media_player",
    "bluetooth"
   ],
-  "firmware": "0.63.0",
+  "firmware": "0.64.0",
   "fonts": {
    "headline": 47,
    "icon": 73,
@@ -14566,6 +14571,7 @@
   },
   "height": 720,
   "hotspot": true,
+  "label_weight": 700,
   "look": "standard",
   "max_bar_items": 12,
   "max_pages": 16,
