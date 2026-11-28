@@ -4448,7 +4448,7 @@
    "media_player",
    "bluetooth"
   ],
-  "firmware": "0.64.0",
+  "firmware": "0.68.0",
   "fonts": {
    "headline": 47,
    "icon": 73,
@@ -11589,7 +11589,7 @@
    "media_player",
    "bluetooth"
   ],
-  "firmware": "0.64.0",
+  "firmware": "0.68.0",
   "fonts": {
    "headline": 47,
    "icon": 73,
@@ -14556,7 +14556,7 @@
    "media_player",
    "bluetooth"
   ],
-  "firmware": "0.64.0",
+  "firmware": "0.68.0",
   "fonts": {
    "headline": 47,
    "icon": 73,
